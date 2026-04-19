@@ -1,0 +1,26 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="28" stroke="#18181b" stroke-width="2.5" opacity="0.3"/>
+  <line x1="32" y1="9" x2="32" y2="4" stroke="#18181b" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <line x1="44.5" y1="18.35" x2="46" y2="17.75" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="50.65" y1="29.5" x2="52.25" y2="29.5" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="55" y1="32" x2="60" y2="32" stroke="#18181b" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <line x1="50.65" y1="34.5" x2="52.25" y2="34.5" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="44.5" y1="45.65" x2="46" y2="46.25" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="32" y1="55" x2="32" y2="60" stroke="#18181b" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <line x1="19.5" y1="45.65" x2="18" y2="46.25" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="13.35" y1="34.5" x2="11.75" y2="34.5" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="9" y1="32" x2="4" y2="32" stroke="#18181b" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <line x1="13.35" y1="29.5" x2="11.75" y2="29.5" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="19.5" y1="18.35" x2="18" y2="17.75" stroke="#18181b" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <line x1="32" y1="32" x2="32" y2="18" stroke="#18181b" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="32" y1="32" x2="44" y2="26" stroke="#18181b" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <path d="M 8 36 C 16 28, 24 44, 32 36 C 40 28, 48 44, 56 36" stroke="url(#fg)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="32" cy="32" r="2.5" fill="#18181b" opacity="0.6"/>
+  <defs>
+    <linearGradient id="fg" x1="8" y1="36" x2="56" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+</svg>

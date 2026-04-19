@@ -1,36 +1,222 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+
+<img src="public/logo.svg" alt="ChronoFlow Logo" width="80" />
+
+# ChronoFlow
+
+**AI-powered dynamic scheduling that adapts to your energy and time.**
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma)](https://www.prisma.io/)
+[![Gemini](https://img.shields.io/badge/Gemini_AI-powered-4285F4?logo=google)](https://ai.google.dev/)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel)](https://chronoflow-tau.vercel.app)
+
+[Live Demo](https://chronoflow-tau.vercel.app) · [Report Bug](https://github.com/Heycoming/ChronoFlow/issues)
+
+</div>
+
+---
+
+## Overview
+
+ChronoFlow is an AI-powered calendar and task management application that intelligently schedules your tasks based on energy levels, priorities, deadlines, and personal routines. Unlike traditional schedulers, ChronoFlow specializes in **fragmented-time utilization** — finding and filling small gaps in your day that other tools ignore.
+
+## Key Features
+
+- **AI Schedule Generation** — Gemini AI analyzes your tasks, constraints, and energy patterns to generate an optimized weekly schedule
+- **Reality Check** — Mathematically validates whether your task load is feasible before invoking the AI, preventing impossible schedules
+- **Real-Time Check-Ins** — Report task progress (on time, early, late, skipped) and trigger automatic 48-hour partial reflows
+- **Diff View Approvals** — Review every AI-proposed change in a GitHub-style diff view (green = added, red = removed, yellow = shifted) before committing
+- **Google Calendar Sync** — Import existing events (read-only) so the AI plans around your real commitments
+- **Smart Buffering** — Automatic 10–15 min cognitive buffers between high-energy blocks
+- **Constraint-Aware** — Respects sleep schedules, meals, hygiene routines, and custom recurring commitments
+- **Energy-Based Scheduling** — Matches tasks to optimal time slots based on energy type (High Focus, Low Energy, Creative, Admin)
+- **Interactive 3D Landing Page** — Spatial visualization of task cards with mouse-driven parallax, zoom, and hover focus
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS v4 |
+| Database | PostgreSQL on Neon (serverless) |
+| ORM | Prisma 7 |
+| Auth | Auth.js v5 (Google OAuth) |
+| AI Engine | Google Gemini via `@google/genai` |
+| State | Zustand |
+| Validation | Zod |
+| Calendar | Custom horizontal timeline grid |
+| Testing | Vitest (unit), Playwright (E2E) |
+| Deployment | Vercel |
+
+---
+
+## Access Restrictions
+
+> **Important:** This application restricts sign-in to the following:
+> - **`@umich.edu`** email addresses
+> - Explicitly allowed email addresses (configured server-side)
+>
+> Other Google accounts will be denied at sign-in.
+
+> **API Rate Limit:** Each user is limited to **10 AI generation calls per day** (schedule generation + reflows). This limit resets daily at midnight UTC.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- **Node.js** 18+ ([download](https://nodejs.org/))
+- **pnpm** (required — not npm or yarn)
+  ```bash
+  npm install -g pnpm
+  ```
+- **PostgreSQL** database — we recommend [Neon](https://neon.tech/) (free tier available)
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Heycoming/ChronoFlow.git
+cd ChronoFlow
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Set Up Environment Variables
 
-## Learn More
+Copy the example file and fill in your values:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cp .env.example .env.local
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Edit `.env.local` with the following:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+# Neon PostgreSQL — direct (unpooled) connection string
+DATABASE_URL="postgresql://user:password@ep-xyz.region.aws.neon.tech/chronoflow?sslmode=require"
 
-## Deploy on Vercel
+# Google OAuth — from Google Cloud Console → APIs & Services → Credentials
+GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your-client-secret"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Gemini AI — from Google AI Studio (https://aistudio.google.com/)
+GEMINI_API_KEY="your-gemini-api-key"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Auth.js secret — generate with: openssl rand -base64 32
+NEXTAUTH_SECRET="your-generated-secret"
+
+# App URL
+NEXTAUTH_URL="http://localhost:3000"
+
+# (Optional) Comma-separated list of non-umich emails allowed to sign in
+ALLOWED_EMAILS="your-email@gmail.com"
+
+# (Optional) Max AI generation calls per user per day (default: 10)
+RATE_LIMIT_PER_DAY=10
+```
+
+#### How to Get API Keys
+
+| Key | Where to Get It |
+|-----|----------------|
+| `DATABASE_URL` | [Neon Console](https://console.neon.tech/) → Create project → Connection string |
+| `GOOGLE_CLIENT_ID` / `SECRET` | [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials → Create OAuth 2.0 Client ID (Web application). Add `http://localhost:3000/api/auth/callback/google` as an authorized redirect URI. |
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/) → Get API Key |
+| `NEXTAUTH_SECRET` | Run `openssl rand -base64 32` in your terminal |
+
+### 4. Set Up the Database
+
+Run Prisma migrations to create the database schema:
+
+```bash
+pnpm db:migrate
+```
+
+### 5. Start the Development Server
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server (Turbopack) |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm test` | Run unit tests (Vitest) |
+| `pnpm test:watch` | Run unit tests in watch mode |
+| `pnpm test:e2e` | Run E2E tests (Playwright) |
+| `pnpm db:migrate` | Run database migrations |
+| `pnpm db:studio` | Open Prisma Studio (DB browser) |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (app)/              # Authenticated route group
+│   │   ├── calendar/       # Weekly timeline calendar view
+│   │   ├── tasks/          # Task management (CRUD)
+│   │   ├── onboarding/     # New user constraint setup
+│   │   └── review/         # Nightly review dashboard
+│   ├── api/                # API route handlers
+│   │   ├── schedule/       # generate, approve, reject, reflow
+│   │   ├── checkin/        # Task check-in endpoint
+│   │   └── gcal/           # Google Calendar sync
+│   ├── signin/             # Sign-in page
+│   └── page.tsx            # Landing page (3D spatial hero)
+├── components/             # React components
+│   ├── CalendarGrid.tsx    # Horizontal timeline calendar
+│   ├── DiffView.tsx        # GitHub-style schedule diff
+│   ├── CheckInModal.tsx    # Task check-in modal
+│   ├── LandingHero.tsx     # 3D landing page scene
+│   └── ...
+├── lib/
+│   ├── gemini/             # AI generation (schema, prompts, client)
+│   ├── gcal/               # Google Calendar integration
+│   ├── realityCheck.ts     # Mathematical feasibility check (pure)
+│   ├── diff.ts             # Schedule diff computation (pure)
+│   └── rateLimit.ts        # Per-user daily rate limiting
+├── store/
+│   └── scheduleStore.ts    # Zustand state management
+└── types/
+    └── schedule.ts         # Shared TypeScript types
+```
+
+---
+
+## Deployment
+
+The app is deployed on [Vercel](https://vercel.com). To deploy your own instance:
+
+1. Push the repository to GitHub
+2. Import the repo on [Vercel](https://vercel.com/new)
+3. Set **Install Command** to `pnpm install`
+4. Add all environment variables from `.env.example`
+5. Set `NEXTAUTH_URL` to your Vercel domain (e.g., `https://your-app.vercel.app`)
+6. Add `https://your-app.vercel.app/api/auth/callback/google` as an authorized redirect URI in Google Cloud Console
+7. Deploy
+
+---
+
+## License
+
+This project was built as a final project for EECS 511 at the University of Michigan.

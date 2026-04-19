@@ -32,6 +32,15 @@ export const {
   session: { strategy: "jwt" },
   callbacks: {
     ...authConfig.callbacks,
+    async signIn({ user }) {
+      const email = user.email;
+      if (!email) return false;
+      const allowed =
+        process.env.ALLOWED_EMAILS?.split(",").map((e) => e.trim());
+      if (allowed?.includes(email)) return true;
+      if (email.endsWith("@umich.edu")) return true;
+      return false;
+    },
     /**
      * Runs at sign-in (with `account`/`user` populated) and on every
      * subsequent token refresh. We cache the user id and — just for the

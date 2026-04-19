@@ -111,11 +111,10 @@ export function CalendarGrid({ initialBlocks, sleepIntervals: rawSleep = [] }: C
     });
   }, []);
 
-  // Week starting Monday
-  const weekStart = useMemo(() => {
-    const ws = startOfWeek(new Date(), { weekStartsOn: 1 });
-    return ws;
-  }, []);
+  // Week navigation
+  const [weekOffset, setWeekOffset] = useState(0);
+  const currentWeekStart = useMemo(() => startOfWeek(new Date(), { weekStartsOn: 1 }), []);
+  const weekStart = useMemo(() => addDays(currentWeekStart, weekOffset * 7), [currentWeekStart, weekOffset]);
 
   // 7 day anchors at 1AM
   const dayAnchors = useMemo(() => {
@@ -187,9 +186,39 @@ export function CalendarGrid({ initialBlocks, sleepIntervals: rawSleep = [] }: C
     return () => clearInterval(id);
   }, []);
 
+  const weekEndDate = addDays(weekStart, 6);
+  const weekLabel = `${format(weekStart, "MMM d")} – ${format(weekEndDate, "MMM d, yyyy")}`;
+
   return (
     <>
-      {/* Category filter pills */}
+      {/* Week navigation + filter pills */}
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setWeekOffset((w) => w - 1)}
+            className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+          >
+            &larr; Prev
+          </button>
+          <button
+            type="button"
+            onClick={() => setWeekOffset(0)}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={() => setWeekOffset((w) => w + 1)}
+            className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+          >
+            Next &rarr;
+          </button>
+          <span className="ml-2 text-sm font-medium text-zinc-700">{weekLabel}</span>
+        </div>
+      </div>
+
       <div className="mb-3 flex flex-wrap gap-2">
         {ALL_SOURCES.map((src) => {
           const active = !hiddenSources.has(src);

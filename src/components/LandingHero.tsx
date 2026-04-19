@@ -56,7 +56,7 @@ const DEMO_TASKS: DemoTask[] = [
 
 export function LandingHero() {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState(-250);
+  const [zoom, setZoom] = useState(-30);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState({ x: 35, z: -10 });
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -95,6 +95,10 @@ export function LandingHero() {
   }, []);
 
   useEffect(() => {
+    if (window.innerWidth < 768) setZoom(-700);
+  }, []);
+
+  useEffect(() => {
     const vp = viewportRef.current;
     if (!vp) return;
     vp.addEventListener("wheel", handleWheel, { passive: false });
@@ -109,7 +113,7 @@ export function LandingHero() {
   const cameraTransform = `translateZ(${zoom}px) rotateX(${rotation.x}deg) rotateZ(${rotation.z}deg) translateX(${pan.x}px) translateY(${pan.y}px)`;
 
   return (
-    <div className="relative flex h-screen w-screen overflow-hidden bg-zinc-50">
+    <div className="relative flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-zinc-50">
       {/* Radial gradient background */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -119,7 +123,7 @@ export function LandingHero() {
       />
 
       {/* Top header bar */}
-      <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-5">
+      <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 md:px-8 md:py-5">
         <div className="flex items-center gap-3">
           <ChronoFlowLogo size={36} />
           <span className="text-lg font-semibold tracking-tight text-zinc-900">
@@ -137,7 +141,7 @@ export function LandingHero() {
       {/* LEFT: 3D Viewport */}
       <div
         ref={viewportRef}
-        className="relative w-3/5 h-full cursor-grab active:cursor-grabbing"
+        className="relative w-full h-[50vh] md:w-3/5 md:h-full cursor-grab active:cursor-grabbing"
         style={{ perspective: "800px", perspectiveOrigin: "55% 50%" }}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
@@ -213,8 +217,8 @@ export function LandingHero() {
       </div>
 
       {/* RIGHT: Hero text */}
-      <div className="relative z-20 flex w-2/5 flex-col justify-center px-12">
-        <h1 className="text-7xl font-bold tracking-tight leading-[1.08]">
+      <div className="relative z-20 flex w-full md:w-[45%] flex-col justify-center px-6 py-8 md:px-12 md:py-0">
+        <h1 className="text-4xl md:text-7xl font-bold tracking-tight leading-[1.08]">
           <span className="text-zinc-900">Schedule</span>
           <br />
           <span className="text-zinc-900">smarter.</span>
@@ -224,12 +228,12 @@ export function LandingHero() {
           </span>
         </h1>
 
-        <p className="mt-6 max-w-lg text-xl leading-relaxed text-zinc-600">
+        <p className="mt-4 md:mt-6 max-w-lg text-base md:text-xl leading-relaxed text-zinc-600">
           AI-powered scheduling that adapts to your energy, respects your
           routines, and dynamically reschedules when life happens.
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-5 text-sm text-zinc-600">
+        <div className="mt-4 md:mt-5 flex flex-wrap gap-3 md:gap-5 text-xs md:text-sm text-zinc-600">
           <span className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
             Deep Work
@@ -248,7 +252,7 @@ export function LandingHero() {
           </span>
         </div>
 
-        <div className="mt-10 flex items-center gap-4">
+        <div className="mt-6 md:mt-10 flex items-center gap-4">
           <Link
             href="/signin"
             className="rounded-full bg-zinc-900 px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-zinc-800 hover:scale-105"
@@ -258,7 +262,7 @@ export function LandingHero() {
           <span className="text-sm text-zinc-400">Free &middot; No credit card</span>
         </div>
 
-        <div className="mt-16 grid grid-cols-3 gap-8 border-t border-zinc-200 pt-8">
+        <div className="mt-8 md:mt-16 grid grid-cols-3 gap-4 md:gap-8 border-t border-zinc-200 pt-6 md:pt-8">
           <div>
             <div className="text-2xl font-bold text-zinc-900">48h</div>
             <div className="mt-1 text-xs text-zinc-500">Smart reflow window</div>

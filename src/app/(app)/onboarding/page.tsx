@@ -31,7 +31,7 @@ export default async function OnboardingPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-8">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-6 md:py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-semibold">Constraints</h1>
         <p className="mt-1 text-sm text-zinc-600">

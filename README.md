@@ -64,6 +64,14 @@ ChronoFlow is an AI-powered calendar and task management application that intell
 
 > **API Rate Limit:** Each user is limited to **10 AI generation calls per day** (schedule generation + reflows). This limit resets daily at midnight UTC.
 
+## Privacy & Google Verification
+
+> **Google Calendar Access:** ChronoFlow requests **read-only** access (`calendar.readonly`) to your Google Calendar. Your calendar data is used solely to display existing events and to help the AI schedule around them. **ChronoFlow never creates, modifies, or deletes any events on your Google Calendar.**
+>
+> **Data Usage:** Your calendar data and task information are stored in your private account and are not shared with any third parties.
+>
+> **Google Verification Notice:** This application has not yet completed Google's OAuth verification process. When signing in for the first time, you may see a warning screen stating "Google hasn't verified this app." To proceed, click **"Advanced"** → **"Go to chronoflow (unsafe)"**. This is a standard notice for apps pending verification and does not indicate any security issue.
+
 ---
 
 ## Getting Started

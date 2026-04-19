@@ -51,7 +51,7 @@ export default async function ReviewPage() {
   const skipped = blocks.filter((b) => b.status === "SKIPPED");
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-8">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-6 md:py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-semibold">Nightly Review</h1>
         <p className="mt-1 text-sm text-zinc-600">
@@ -59,7 +59,7 @@ export default async function ReviewPage() {
         </p>
       </header>
 
-      <div className="mb-6 grid grid-cols-3 gap-4">
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           label="Completed"
           value={completed.length}

@@ -180,10 +180,14 @@ export function CalendarGrid({ initialBlocks, sleepIntervals: rawSleep = [] }: C
 
   // "now" state — only set after mount to avoid SSR/client mismatch.
   const [now, setNow] = useState<Date | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(id);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => { clearInterval(id); window.removeEventListener("resize", checkMobile); };
   }, []);
 
   const weekEndDate = addDays(weekStart, 6);
@@ -191,34 +195,33 @@ export function CalendarGrid({ initialBlocks, sleepIntervals: rawSleep = [] }: C
 
   return (
     <>
-      {/* Week navigation + filter pills */}
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setWeekOffset((w) => w - 1)}
-            className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
-          >
-            &larr; Prev
-          </button>
-          <button
-            type="button"
-            onClick={() => setWeekOffset(0)}
-            className="rounded-lg border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            onClick={() => setWeekOffset((w) => w + 1)}
-            className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
-          >
-            Next &rarr;
-          </button>
-          <span className="ml-2 text-sm font-medium text-zinc-700">{weekLabel}</span>
-        </div>
+      {/* Week navigation */}
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setWeekOffset((w) => w - 1)}
+          className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+        >
+          &larr; Prev
+        </button>
+        <button
+          type="button"
+          onClick={() => setWeekOffset(0)}
+          className="rounded-lg border border-zinc-200 bg-white px-3 py-1 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition"
+        >
+          Today
+        </button>
+        <button
+          type="button"
+          onClick={() => setWeekOffset((w) => w + 1)}
+          className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-sm text-zinc-600 hover:bg-zinc-50 transition"
+        >
+          Next &rarr;
+        </button>
+        <span className="text-sm font-medium text-zinc-700">{weekLabel}</span>
       </div>
 
+      {/* Filter pills */}
       <div className="mb-3 flex flex-wrap gap-2">
         {ALL_SOURCES.map((src) => {
           const active = !hiddenSources.has(src);
@@ -246,8 +249,59 @@ export function CalendarGrid({ initialBlocks, sleepIntervals: rawSleep = [] }: C
         })}
       </div>
 
-      {/* Timeline grid */}
-      <div className="rounded-xl border border-zinc-200 bg-white">
+      {/* Mobile: vertical day-by-day list */}
+      {isMobile && (
+        <div className="md:hidden space-y-4">
+          {dayAnchors.map((anchor, di) => {
+            const dayDate = addDays(weekStart, di);
+            const isToday = now && isSameDay(dayDate, now);
+            const dayBlocks = blocksByDay[di].sort((a, b) => a.start.getTime() - b.start.getTime());
+            return (
+              <div key={di} className="rounded-xl border border-zinc-200 bg-white overflow-hidden">
+                <div className={`px-3 py-2 border-b border-zinc-100 ${isToday ? "bg-blue-50" : "bg-zinc-50"}`}>
+                  <span className={`text-sm font-medium ${isToday ? "text-blue-600" : "text-zinc-700"}`}>
+                    {DAY_LABELS[di]} {format(dayDate, "MMM d")}
+                  </span>
+                  {isToday && <span className="ml-2 text-xs text-blue-500">Today</span>}
+                </div>
+                {dayBlocks.length === 0 ? (
+                  <div className="px-3 py-3 text-xs text-zinc-400">No events</div>
+                ) : (
+                  <div className="divide-y divide-zinc-50">
+                    {dayBlocks.map((b) => {
+                      const c = COLORS[b.source] ?? COLORS.GCAL;
+                      return (
+                        <div
+                          key={b.id}
+                          className="flex items-center gap-2 px-3 py-2"
+                          style={{ borderLeft: `3px solid ${c.border}`, cursor: b.source === "AI" ? "pointer" : "default" }}
+                          onClick={() => handleBlockClick(b)}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate" style={{ color: c.text }}>{b.title}</div>
+                            <div className="text-[11px] text-zinc-500">
+                              {formatTime(b.start)} – {formatTime(b.end)}
+                            </div>
+                          </div>
+                          <span
+                            className="text-[10px] px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: c.bg, color: c.text }}
+                          >
+                            {b.source}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Desktop: Timeline grid */}
+      <div className={`rounded-xl border border-zinc-200 bg-white ${isMobile ? "hidden" : ""}`}>
         <div className="flex">
           {/* Day labels column (sticky) */}
           <div className="sticky left-0 z-20 flex-shrink-0 bg-white border-r border-zinc-200" style={{ width: LABEL_COL_WIDTH }}>

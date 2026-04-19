@@ -84,10 +84,10 @@ export default async function CalendarPage() {
   }));
 
   return (
-    <div className="px-6 py-6">
-      <div className="mb-4 flex items-end justify-between">
+    <div className="px-3 py-4 md:px-6 md:py-6">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1 className="text-xl md:text-2xl font-semibold">
             Welcome, {session?.user?.name ?? "there"}.
           </h1>
           <p className="mt-1 text-sm text-zinc-600">

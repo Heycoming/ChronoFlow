@@ -14,6 +14,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
+import { checkRateLimit } from "@/lib/rateLimit";
 import { orchestrateSchedule } from "@/lib/schedule/orchestrate";
 
 const BodySchema = z
@@ -44,6 +45,14 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Invalid body", issues: parsed.error.issues },
       { status: 400 },
+    );
+  }
+
+  const rateLimit = await checkRateLimit(session.user.id);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: `Daily AI generation limit reached. Resets at ${rateLimit.resetAt.toISOString()}.` },
+      { status: 429 },
     );
   }
 

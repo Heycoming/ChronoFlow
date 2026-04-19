@@ -13,6 +13,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { checkRateLimit } from "@/lib/rateLimit";
 import { orchestrateSchedule } from "@/lib/schedule/orchestrate";
 
 const BodySchema = z.object({
@@ -83,7 +84,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, reflow: false });
   }
 
-  // EARLY or LATE — trigger a 48h partial reflow.
+  // EARLY or LATE — trigger a 48h partial reflow (if rate limit allows).
+  const rateLimit = await checkRateLimit(session.user.id);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({
+      ok: true,
+      reflow: false,
+      reflowError: "Daily AI generation limit reached. Reflow skipped.",
+    });
+  }
   const checkInNote =
     outcome === "EARLY"
       ? `Finished "${block.title}" early by ~${actualMinutes ?? "?"} min. Free up the remaining time.`

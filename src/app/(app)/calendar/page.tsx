@@ -7,6 +7,7 @@
  */
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { requireOnboarding } from "@/lib/requireOnboarding";
 import { CalendarGrid } from "@/components/CalendarGrid";
 import { DiffView } from "@/components/DiffView";
 import { GcalSyncButton } from "@/components/GcalSyncButton";
@@ -17,6 +18,7 @@ import type { Interval, TimeBlockInput, WeeklyRecurrence } from "@/types/schedul
 export default async function CalendarPage() {
   const session = await auth();
   const userId = session?.user?.id;
+  if (userId) await requireOnboarding(userId);
 
   const now = new Date();
   const windowStart = new Date(now);

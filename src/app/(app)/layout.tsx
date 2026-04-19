@@ -14,6 +14,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await auth();
   if (!session?.user) redirect("/signin");
 
+
   async function handleSignOut() {
     "use server";
     await signOut({ redirectTo: "/signin" });

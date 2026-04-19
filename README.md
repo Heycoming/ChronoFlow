@@ -219,4 +219,6 @@ The app is deployed on [Vercel](https://vercel.com). To deploy your own instance
 
 ## License
 
-This project was built as a final project for EECS 511 at the University of Michigan.
+This project was built as a final project for SI511 at the University of Michigan.
+
+Built and vibe-coded entirely through human vision + [Claude Code](https://claude.ai/code) implementation — all product decisions, design direction, and feature ideas are human-driven, while technical implementation details were realized with AI-assisted coding.
